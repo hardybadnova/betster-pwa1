@@ -1,13 +1,17 @@
 
-import React, { useMemo } from 'react';
-import Header from '@/components/Header';
-import UserBalance from '@/components/UserBalance';
+import React, { useMemo, useState } from 'react';
 import { useGameContext } from '@/context/GameContext';
-import { formatCurrency, formatDate, isBetWinner } from '@/lib/betUtils';
-import { Coins, BarChart3, History, TrendingUp, TrendingDown } from 'lucide-react';
+import { formatCurrency } from '@/lib/betUtils';
+import { Coins, BarChart3, History, TrendingUp, TrendingDown, ChevronRight, Gift } from 'lucide-react';
+import UserBalance from '@/components/UserBalance';
+import GameModule from '@/components/GameModule';
+import BetsterAppBar from '@/components/BetsterAppBar';
+import BetsterBottomBar from '@/components/BetsterBottomBar';
+import BetsterDrawer from '@/components/BetsterDrawer';
 
 const Dashboard = () => {
   const { currentUser, userBets, games } = useGameContext();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   
   // Calculate stats
   const stats = useMemo(() => {
@@ -17,7 +21,7 @@ const Dashboard = () => {
     const winningBets = userBets.filter(bet => {
       const game = games.find(g => g.id === bet.gameId);
       if (!game || game.winningNumber === null) return false;
-      return isBetWinner(bet.number, game.winningNumber);
+      return bet.number === game.winningNumber;
     });
     
     const winCount = winningBets.length;
@@ -33,161 +37,151 @@ const Dashboard = () => {
     };
   }, [userBets, games]);
   
-  // Get the five most recent bets
-  const recentBets = [...userBets]
-    .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
-    .slice(0, 5);
-  
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
+    <div className="min-h-screen bg-gradient-to-br from-[#1A1F2C]/80 to-black flex flex-col">
+      <BetsterAppBar onOpenDrawer={() => setIsDrawerOpen(true)} title="Dashboard" />
+      <BetsterDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
       
-      <main className="flex-1 py-8">
-        <div className="container max-w-6xl mx-auto px-4">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">Your Dashboard</h1>
-            <p className="text-muted-foreground">
-              Track your betting performance and history
-            </p>
+      <main className="flex-1 pb-20">
+        <div className="p-4">
+          {/* Welcome Card */}
+          <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-[#9b87f5]/20 to-[#6E59A5]/20 border border-[#9b87f5]/10">
+            <h2 className="text-xl font-bold text-white mb-1">Welcome back, {currentUser.name}</h2>
+            <p className="text-gray-300 text-sm mb-4">Ready to place your bets today?</p>
+            
+            <div className="flex items-center">
+              <div className="flex items-center bg-black/30 px-3 py-2 rounded-lg">
+                <Coins className="h-5 w-5 text-amber-500 mr-2" />
+                <span className="text-white font-bold">{formatCurrency(currentUser.balance)}</span>
+              </div>
+              
+              <button className="ml-3 flex items-center text-[#9b87f5] text-sm">
+                <Gift className="h-4 w-4 mr-1" />
+                <span>Daily Bonus</span>
+              </button>
+            </div>
           </div>
           
-          {/* Balance and Stats */}
-          <div className="glass-card p-6 mb-8 animate-slide-up">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="md:col-span-4 lg:col-span-1">
-                <h3 className="text-sm font-medium text-muted-foreground mb-1">Current Balance</h3>
+          {/* Stats Overview */}
+          <div className="mb-6">
+            <div className="grid grid-cols-3 gap-3">
+              <div className="p-3 rounded-xl bg-black/30 border border-[#9b87f5]/10">
+                <h3 className="text-xs text-gray-400 mb-1">Win Rate</h3>
                 <div className="flex items-center">
-                  <Coins className="h-8 w-8 text-amber-500 mr-3" />
-                  <span className="text-3xl font-bold">{formatCurrency(currentUser.balance)}</span>
+                  <History className="h-4 w-4 text-[#9b87f5] mr-1" />
+                  <span className="text-lg font-bold text-white">
+                    {stats.winRate.toFixed(1)}%
+                  </span>
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-3 md:col-span-4 lg:col-span-3 gap-4">
-                <div className="neo-morphism p-4 rounded-xl">
-                  <h3 className="text-sm font-medium text-muted-foreground mb-1">Total Bets</h3>
-                  <div className="flex items-center">
-                    <BarChart3 className="h-5 w-5 text-primary mr-2" />
-                    <span className="text-xl font-bold">{stats.totalBets}</span>
-                  </div>
+              <div className="p-3 rounded-xl bg-black/30 border border-[#9b87f5]/10">
+                <h3 className="text-xs text-gray-400 mb-1">Profit/Loss</h3>
+                <div className="flex items-center">
+                  {stats.profitLoss >= 0 ? (
+                    <TrendingUp className="h-4 w-4 text-emerald-500 mr-1" />
+                  ) : (
+                    <TrendingDown className="h-4 w-4 text-rose-500 mr-1" />
+                  )}
+                  <span className={`text-lg font-bold ${
+                    stats.profitLoss >= 0 ? 'text-emerald-500' : 'text-rose-500'
+                  }`}>
+                    {formatCurrency(stats.profitLoss)}
+                  </span>
                 </div>
-                
-                <div className="neo-morphism p-4 rounded-xl">
-                  <h3 className="text-sm font-medium text-muted-foreground mb-1">Win Rate</h3>
-                  <div className="flex items-center">
-                    <History className="h-5 w-5 text-primary mr-2" />
-                    <span className="text-xl font-bold">{stats.winRate.toFixed(1)}%</span>
-                  </div>
-                </div>
-                
-                <div className="neo-morphism p-4 rounded-xl">
-                  <h3 className="text-sm font-medium text-muted-foreground mb-1">Profit/Loss</h3>
-                  <div className="flex items-center">
-                    {stats.profitLoss >= 0 ? (
-                      <TrendingUp className="h-5 w-5 text-emerald-500 mr-2" />
-                    ) : (
-                      <TrendingDown className="h-5 w-5 text-rose-500 mr-2" />
-                    )}
-                    <span className={`text-xl font-bold ${
-                      stats.profitLoss >= 0 ? 'text-emerald-500' : 'text-rose-500'
-                    }`}>
-                      {formatCurrency(stats.profitLoss)}
-                    </span>
-                  </div>
+              </div>
+              
+              <div className="p-3 rounded-xl bg-black/30 border border-[#9b87f5]/10">
+                <h3 className="text-xs text-gray-400 mb-1">Total Bets</h3>
+                <div className="flex items-center">
+                  <BarChart3 className="h-4 w-4 text-[#9b87f5] mr-1" />
+                  <span className="text-lg font-bold text-white">{stats.totalBets}</span>
                 </div>
               </div>
             </div>
           </div>
           
-          {/* Recent Bets */}
-          <div className="mb-8 animate-slide-up" style={{ animationDelay: '100ms' }}>
-            <h2 className="text-xl font-semibold mb-4">Recent Bets</h2>
-            {recentBets.length > 0 ? (
-              <div className="glass-card overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="bg-secondary/50">
-                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                          Date
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                          Game
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                          Number
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                          Amount
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                          Result
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
-                      {recentBets.map((bet) => {
-                        const game = games.find(g => g.id === bet.gameId);
-                        const isWinner = game?.winningNumber !== null && bet.number === game?.winningNumber;
-                        const isPending = game?.status !== 'completed';
-                        
-                        return (
-                          <tr key={`${bet.gameId}-${bet.timestamp.getTime()}`}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                              {formatDate(bet.timestamp)}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                              {game?.name || 'Unknown Game'}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                              {bet.number}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                              {formatCurrency(bet.amount)}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                              {isPending ? (
-                                <span className="px-2 py-1 text-xs rounded-full bg-amber-100 text-amber-800">
-                                  Pending
-                                </span>
-                              ) : isWinner ? (
-                                <span className="px-2 py-1 text-xs rounded-full bg-emerald-100 text-emerald-800">
-                                  Won {formatCurrency(bet.amount * 10)}
-                                </span>
-                              ) : (
-                                <span className="px-2 py-1 text-xs rounded-full bg-rose-100 text-rose-800">
-                                  Lost
-                                </span>
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
+          {/* Game Modules */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-white">Game Modules</h2>
+              <button className="text-sm text-[#9b87f5] flex items-center">
+                View All <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+            
+            <div className="space-y-3">
+              <GameModule 
+                type="bluff" 
+                name="Bluff the Tough" 
+                description="Strategy game of bluffing and deception"
+                players={124}
+                prize="$5,000"
+              />
+              
+              <GameModule 
+                type="top-spot" 
+                name="Top Spot" 
+                description="Claim the highest position on the number board"
+                players={87}
+                prize="$3,500"
+              />
+              
+              <GameModule 
+                type="jackpot" 
+                name="Jackpot Horse" 
+                description="Bet on your horse to win the grand prize"
+                players={215}
+                prize="$10,000"
+              />
+            </div>
+          </div>
+          
+          {/* Recent Activity */}
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-white">Recent Activity</h2>
+              <button className="text-sm text-[#9b87f5] flex items-center">
+                View All <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+            
+            {userBets.length > 0 ? (
+              <div className="space-y-3">
+                {userBets.slice(0, 3).map((bet, index) => {
+                  const game = games.find(g => g.id === bet.gameId);
+                  const isWinner = game?.winningNumber !== null && bet.number === game?.winningNumber;
+                  return (
+                    <div
+                      key={index}
+                      className="p-3 rounded-xl bg-black/30 border border-[#9b87f5]/10 flex items-center justify-between"
+                    >
+                      <div>
+                        <p className="text-sm text-white">{game?.name || 'Unknown Game'}</p>
+                        <p className="text-xs text-gray-400">Bet on #{bet.number}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className={`text-sm font-medium ${isWinner ? 'text-emerald-500' : 'text-rose-500'}`}>
+                          {isWinner ? `+${formatCurrency(bet.amount * 10)}` : `-${formatCurrency(bet.amount)}`}
+                        </p>
+                        <p className="text-xs text-gray-400">
+                          {isWinner ? 'Won' : game?.status === 'completed' ? 'Lost' : 'Pending'}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             ) : (
-              <div className="glass-card p-6 text-center">
-                <p className="text-muted-foreground">You haven't placed any bets yet</p>
+              <div className="p-6 rounded-xl bg-black/30 border border-[#9b87f5]/10 text-center">
+                <p className="text-gray-400">No activity yet</p>
               </div>
             )}
           </div>
-          
-          {/* Get More Currency */}
-          <div className="glass-card p-8 text-center animate-slide-up" style={{ animationDelay: '200ms' }}>
-            <h3 className="text-xl font-medium mb-2">Need More Currency?</h3>
-            <p className="text-muted-foreground mb-6">
-              This is a demo app with virtual currency. You can always get more!
-            </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="py-2 px-6 bg-primary text-primary-foreground rounded-md font-medium hover:bg-primary/90 transition-colors"
-            >
-              Refresh App
-            </button>
-          </div>
         </div>
       </main>
+      
+      <BetsterBottomBar />
     </div>
   );
 };
