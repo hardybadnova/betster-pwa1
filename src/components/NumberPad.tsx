@@ -5,18 +5,32 @@ import { getNumbersByPattern } from '@/lib/betUtils';
 interface NumberPadProps {
   onSelectNumber: (number: number) => void;
   selectedNumber: number | null;
+  maxNumber?: number; // New prop to limit the maximum number
 }
 
 type FilterType = 'all' | 'even' | 'odd' | 'high' | 'low';
 
 const NumberPad: React.FC<NumberPadProps> = ({ 
   onSelectNumber, 
-  selectedNumber 
+  selectedNumber,
+  maxNumber = 100 // Default to 100 if not specified
 }) => {
   const [filter, setFilter] = useState<FilterType>('all');
   
-  // Get filtered numbers
-  const numbers = getNumbersByPattern(filter);
+  // Get filtered numbers, limited by maxNumber
+  const getFilteredNumbers = () => {
+    const allNumbers = getNumbersByPattern(filter);
+    return allNumbers.filter(num => num <= maxNumber);
+  };
+  
+  const numbers = getFilteredNumbers();
+  
+  // Calculate grid columns based on maxNumber
+  const getGridCols = () => {
+    if (maxNumber <= 15) return 'grid-cols-4'; // 4 columns for 0-15
+    if (maxNumber <= 36) return 'grid-cols-6'; // 6 columns for larger ranges
+    return 'grid-cols-10'; // 10 columns for full range
+  };
   
   return (
     <div className="w-full">
@@ -40,7 +54,7 @@ const NumberPad: React.FC<NumberPadProps> = ({
         </div>
       </div>
       
-      <div className="grid grid-cols-10 gap-1 sm:gap-2">
+      <div className={`grid ${getGridCols()} gap-2`}>
         {numbers.map((number) => (
           <button
             key={number}
