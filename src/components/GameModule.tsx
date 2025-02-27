@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Crown, Horse, Sword } from 'lucide-react';
+import { ArrowRight, Crown, Award, Sword } from 'lucide-react';
 
 interface GameModuleProps {
   type: 'bluff' | 'top-spot' | 'jackpot';
@@ -27,7 +27,7 @@ const GameModule: React.FC<GameModuleProps> = ({
       case 'top-spot':
         return <Crown className="h-10 w-10 text-amber-500" />;
       case 'jackpot':
-        return <Horse className="h-10 w-10 text-emerald-500" />;
+        return <Award className="h-10 w-10 text-emerald-500" />; // Changed Horse to Award
       default:
         return null;
     }
