@@ -60,7 +60,7 @@
   
   /* Glass card style */
   .glass-card {
-    @apply bg-black/20 backdrop-blur-sm border border-white/10 rounded-xl;
+    @apply bg-gradient-to-br from-[#1A1F2C]/40 to-black/30 backdrop-blur-sm border border-[#9b87f5]/20 rounded-xl shadow-lg;
   }
   
   /* Thin scrollbar for player list */
@@ -81,10 +81,56 @@
     background-color: rgba(155, 135, 245, 0.3);
     border-radius: 20px;
   }
+
+  /* Premium background gradients */
+  .premium-gradient-bg {
+    @apply bg-gradient-to-br from-[#1A1F2C] via-[#151823] to-black;
+  }
+
+  .premium-card-gradient {
+    @apply bg-gradient-to-br from-[#9b87f5]/10 via-[#6E59A5]/8 to-black/20;
+  }
+
+  .premium-button-gradient {
+    @apply bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] hover:from-[#a996ff] hover:to-[#8a76d2] transition-all duration-300;
+  }
+
+  /* Premium text gradients */
+  .premium-text-gradient {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-[#9b87f5] to-[#7E69AB];
+  }
 }
 
 /* Number chip animation on hover */
+.number-chip {
+  @apply transition-all duration-300;
+}
+
 .number-chip:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(155, 135, 245, 0.2);
+  box-shadow: 0 4px 12px rgba(155, 135, 245, 0.3);
+}
+
+/* Premium glass card */
+.premium-glass-card {
+  @apply bg-gradient-to-br from-[#1A1F2C]/40 via-[#151823]/30 to-black/20;
+  @apply backdrop-blur-md border border-[#9b87f5]/20 rounded-xl;
+  @apply shadow-[0_4px_20px_rgba(155,135,245,0.15)];
+}
+
+/* Premium table styles */
+.premium-table th {
+  @apply bg-[#1A1F2C]/80 text-[#9b87f5] font-medium p-2;
+}
+
+.premium-table tr:nth-child(even) {
+  @apply bg-[#1A1F2C]/20;
+}
+
+.premium-table tr:nth-child(odd) {
+  @apply bg-black/20;
+}
+
+.premium-table tr:hover {
+  @apply bg-[#9b87f5]/10;
 }

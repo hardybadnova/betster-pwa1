@@ -68,8 +68,8 @@ const BettingCard: React.FC<BettingCardProps> = ({
   };
 
   return (
-    <div className="glass-card p-6 w-full max-w-md mx-auto animate-slide-up">
-      <h3 className="text-lg font-semibold mb-4">Place Your Bet</h3>
+    <div className="premium-glass-card p-6 w-full max-w-md mx-auto animate-slide-up">
+      <h3 className="text-lg font-semibold mb-4 premium-text-gradient">Place Your Bet</h3>
       
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
@@ -87,7 +87,7 @@ const BettingCard: React.FC<BettingCardProps> = ({
             <button 
               onClick={handleDecrease}
               disabled={betAmount <= minBet}
-              className="h-8 w-8 rounded-full flex items-center justify-center bg-secondary hover:bg-secondary/80 disabled:opacity-50"
+              className="h-8 w-8 rounded-full flex items-center justify-center bg-[#1A1F2C] border border-[#9b87f5]/20 hover:bg-[#9b87f5]/10 disabled:opacity-50 transition-colors"
             >
               <ChevronDown className="h-4 w-4" />
             </button>
@@ -97,7 +97,7 @@ const BettingCard: React.FC<BettingCardProps> = ({
             <button 
               onClick={handleIncrease}
               disabled={betAmount >= maxBet || betAmount >= currentUser.balance}
-              className="h-8 w-8 rounded-full flex items-center justify-center bg-secondary hover:bg-secondary/80 disabled:opacity-50"
+              className="h-8 w-8 rounded-full flex items-center justify-center bg-[#1A1F2C] border border-[#9b87f5]/20 hover:bg-[#9b87f5]/10 disabled:opacity-50 transition-colors"
             >
               <ChevronUp className="h-4 w-4" />
             </button>
@@ -118,7 +118,7 @@ const BettingCard: React.FC<BettingCardProps> = ({
       <button
         onClick={handlePlaceBet}
         disabled={selectedNumber === null || betAmount > currentUser.balance || game.status !== 'active'}
-        className="w-full py-3 px-4 bg-primary text-primary-foreground rounded-md font-medium hover:bg-primary/90 disabled:opacity-50 transition-colors"
+        className="w-full py-3 px-4 premium-button-gradient text-white rounded-md font-medium disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {selectedNumber === null 
           ? 'Select a Number' 

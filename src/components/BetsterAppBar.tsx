@@ -23,30 +23,30 @@ const BetsterAppBar: React.FC<BetsterAppBarProps> = ({
         <div className="flex items-center">
           <button
             onClick={onOpenDrawer}
-            className="h-10 w-10 rounded-full flex items-center justify-center text-gray-300 hover:bg-white/10"
+            className="h-10 w-10 rounded-full flex items-center justify-center text-gray-300 hover:bg-[#9b87f5]/10"
           >
             <Menu className="h-5 w-5" />
           </button>
           
           <div className="ml-4">
-            <h1 className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#9b87f5] to-[#7E69AB]">
+            <h1 className="text-lg font-bold premium-text-gradient">
               {title}
             </h1>
           </div>
         </div>
         
         <div className="flex items-center space-x-2">
-          <button className="h-10 w-10 rounded-full flex items-center justify-center text-gray-300 hover:bg-white/10">
+          <button className="h-10 w-10 rounded-full flex items-center justify-center text-gray-300 hover:bg-[#9b87f5]/10">
             <Search className="h-5 w-5" />
           </button>
           
-          <button className="h-10 w-10 rounded-full flex items-center justify-center text-gray-300 hover:bg-white/10 relative">
+          <button className="h-10 w-10 rounded-full flex items-center justify-center text-gray-300 hover:bg-[#9b87f5]/10 relative">
             <Bell className="h-5 w-5" />
             <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-[#9b87f5]"></span>
           </button>
           
           <div 
-            className="h-10 w-10 rounded-full bg-[#9b87f5] flex items-center justify-center cursor-pointer"
+            className="h-10 w-10 rounded-full bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] flex items-center justify-center cursor-pointer shadow-[0_0_10px_rgba(155,135,245,0.3)]"
             onClick={() => navigate('/profile')}
           >
             <span className="text-white font-medium">{currentUser.name.charAt(0)}</span>

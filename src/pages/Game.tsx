@@ -42,7 +42,7 @@ const Game = () => {
   }
   
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#1A1F2C]/90 to-black">
+    <div className="min-h-screen flex flex-col premium-gradient-bg text-white">
       <Header />
       
       <main className="flex-1 py-4">
