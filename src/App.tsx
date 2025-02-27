@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import SplashScreen from "./components/SplashScreen";
+import PoolSelection from "./pages/PoolSelection";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +46,7 @@ const App = () => {
               {/* Protected routes */}
               <Route path="/" element={isAuthenticated ? <Index /> : <Navigate to="/login" />} />
               <Route path="/lobby" element={isAuthenticated ? <GameLobby /> : <Navigate to="/login" />} />
+              <Route path="/pools" element={isAuthenticated ? <PoolSelection /> : <Navigate to="/login" />} />
               <Route path="/create" element={isAuthenticated ? <CreateGame /> : <Navigate to="/login" />} />
               <Route path="/game/:gameId" element={isAuthenticated ? <Game /> : <Navigate to="/login" />} />
               <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} />

@@ -39,6 +39,12 @@ const Login = () => {
     }
   };
 
+  // Bypass login for development (remove in production)
+  const bypassLogin = () => {
+    localStorage.setItem('isLoggedIn', 'true');
+    navigate('/dashboard');
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#1A1F2C] to-black">
       <div className="flex-1 flex items-center justify-center px-4 py-12">
@@ -53,6 +59,12 @@ const Login = () => {
               BETSTER
             </h1>
             <p className="mt-2 text-gray-400">Sign in to your account</p>
+            <button 
+              onClick={bypassLogin}
+              className="mt-2 text-xs text-[#9b87f5] hover:underline"
+            >
+              Bypass login (development only)
+            </button>
           </div>
 
           {error && (
@@ -77,7 +89,7 @@ const Login = () => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="pl-10 block w-full bg-[#2A2E3A] border border-[#9b87f5]/20 rounded-md py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-[#9b87f5] focus:border-transparent"
-                  placeholder="Enter username"
+                  placeholder="Enter username (asdf)"
                 />
               </div>
             </div>
@@ -96,7 +108,7 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="pl-10 block w-full bg-[#2A2E3A] border border-[#9b87f5]/20 rounded-md py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-[#9b87f5] focus:border-transparent"
-                  placeholder="Enter password"
+                  placeholder="Enter password (asdf)"
                 />
               </div>
             </div>

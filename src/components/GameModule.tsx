@@ -65,7 +65,7 @@ const GameModule: React.FC<GameModuleProps> = ({
         </div>
         
         <button
-          onClick={() => navigate(`/lobby?game=${type}`)}
+          onClick={() => navigate(`/pools?game=${type}`)}
           className="shrink-0 flex items-center justify-center h-8 w-8 rounded-full bg-secondary hover:bg-secondary/80"
         >
           <ArrowRight className="h-4 w-4" />
