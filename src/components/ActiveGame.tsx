@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { Game, useGameContext } from '@/context/GameContext';
 import { calculateTimeRemaining, formatCurrency } from '@/lib/betUtils';
@@ -12,6 +13,7 @@ interface ActiveGameProps {
 }
 
 const ActiveGame: React.FC<ActiveGameProps> = ({ game }) => {
+  const navigate = useNavigate();
   const [selectedNumber, setSelectedNumber] = useState<number | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<string>('');
   const [showChat, setShowChat] = useState(false);
