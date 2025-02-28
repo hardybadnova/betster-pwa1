@@ -199,10 +199,50 @@ const ActiveGame: React.FC<ActiveGameProps> = ({
     return <ResultScreen game={game} gameType={gameType} onPlayAgain={handlePlayAgain} />;
   }
 
-  // Render different content based on game status
-  const renderGameContent = () => {
-    if (game.status === 'active') {
-      return (
+  return (
+    <div className="container max-w-6xl mx-auto px-4 py-6 pb-20">
+      {/* Game Header with Timer */}
+      <div className="mb-6 text-center">
+        <h1 className="text-3xl font-bold mb-2 premium-text-gradient">{game.name}</h1>
+        
+        {game.status === 'active' && (
+          <div className="flex items-center justify-center space-x-4 mb-4">
+            <div className="py-2 px-6 bg-[#1A1F2C] border border-[#9b87f5]/20 rounded-full flex items-center space-x-3">
+              <Clock className="h-5 w-5 text-amber-500" />
+              <div className="text-xl font-medium">{timeRemaining}</div>
+            </div>
+          </div>
+        )}
+        
+        {game.status === 'completed' && game.winningNumber !== null && (
+          <div className="bg-primary/10 p-4 rounded-lg inline-flex items-center mb-4">
+            <Trophy className="h-5 w-5 mr-2 text-amber-500" />
+            <span className="font-medium">Winning Number: </span>
+            <span className="text-xl font-bold ml-2">{game.winningNumber}</span>
+          </div>
+        )}
+        
+        {game.status === 'waiting' && (
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+            <button
+              onClick={handleStartGame}
+              className="py-2 px-6 premium-button-gradient text-white rounded-md font-medium w-full sm:w-auto"
+            >
+              Start Game
+            </button>
+            
+            <button
+              onClick={handleAddFakePlayers}
+              className="py-2 px-6 bg-[#1A1F2C] border border-[#9b87f5]/20 text-white rounded-md font-medium hover:bg-[#9b87f5]/10 transition-colors w-full sm:w-auto"
+            >
+              Add Players
+            </button>
+          </div>
+        )}
+      </div>
+      
+      {/* Game content */}
+      {game.status === 'active' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Number Selection - Center Top */}
           <div className="lg:col-span-12 order-2 lg:order-1">
@@ -382,9 +422,9 @@ const ActiveGame: React.FC<ActiveGameProps> = ({
             </div>
           </div>
         </div>
-      );
-    } else if (game.status === 'waiting') {
-      return (
+      )}
+      
+      {game.status === 'waiting' && (
         <div className="premium-glass-card p-8 text-center">
           <h3 className="text-xl font-medium mb-4">Waiting for Game to Start</h3>
           <p className="text-muted-foreground">
@@ -400,56 +440,7 @@ const ActiveGame: React.FC<ActiveGameProps> = ({
                 : 'The player who picks the least chosen number out of 10,000 players wins 90% of the massive pool!'}
           </p>
         </div>
-      );
-    }
-    
-    return null;
-  };
-
-  return (
-    <div className="container max-w-6xl mx-auto px-4 py-6 pb-20">
-      {/* Game Header with Timer */}
-      <div className="mb-6 text-center">
-        <h1 className="text-3xl font-bold mb-2 premium-text-gradient">{game.name}</h1>
-        
-        {game.status === 'active' && (
-          <div className="flex items-center justify-center space-x-4 mb-4">
-            <div className="py-2 px-6 bg-[#1A1F2C] border border-[#9b87f5]/20 rounded-full flex items-center space-x-3">
-              <Clock className="h-5 w-5 text-amber-500" />
-              <div className="text-xl font-medium">{timeRemaining}</div>
-            </div>
-          </div>
-        )}
-        
-        {game.status === 'completed' && game.winningNumber !== null && (
-          <div className="bg-primary/10 p-4 rounded-lg inline-flex items-center mb-4">
-            <Trophy className="h-5 w-5 mr-2 text-amber-500" />
-            <span className="font-medium">Winning Number: </span>
-            <span className="text-xl font-bold ml-2">{game.winningNumber}</span>
-          </div>
-        )}
-        
-        {game.status === 'waiting' && (
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
-            <button
-              onClick={handleStartGame}
-              className="py-2 px-6 premium-button-gradient text-white rounded-md font-medium w-full sm:w-auto"
-            >
-              Start Game
-            </button>
-            
-            <button
-              onClick={handleAddFakePlayers}
-              className="py-2 px-6 bg-[#1A1F2C] border border-[#9b87f5]/20 text-white rounded-md font-medium hover:bg-[#9b87f5]/10 transition-colors w-full sm:w-auto"
-            >
-              Add Players
-            </button>
-          </div>
-        )}
-      </div>
-      
-      {/* Game content */}
-      {renderGameContent()}
+      )}
     </div>
   );
 };
