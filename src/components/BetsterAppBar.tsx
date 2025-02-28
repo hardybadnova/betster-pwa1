@@ -43,9 +43,8 @@ const BetsterAppBar: React.FC<BetsterAppBarProps> = ({
         <div className="w-1/3 flex items-center justify-end space-x-2">
           <Popover>
             <PopoverTrigger asChild>
-              <button className="flex items-center h-10 px-3 rounded-full bg-[#1A1F2C] border border-[#9b87f5]/20 text-gray-300 hover:bg-[#9b87f5]/10">
-                <Wallet className="h-4 w-4 mr-2 text-[#9b87f5]" />
-                <span className="text-white font-medium text-sm">{formatCurrency(currentUser.balance)}</span>
+              <button className="flex items-center justify-center h-10 w-10 rounded-full bg-[#1A1F2C] border border-[#9b87f5]/20 text-gray-300 hover:bg-[#9b87f5]/10">
+                <Wallet className="h-5 w-5 text-[#9b87f5]" />
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-64 p-0 bg-[#1A1F2C] border border-[#9b87f5]/20 shadow-[0_0_30px_rgba(155,135,245,0.2)]">

@@ -26,7 +26,7 @@ const Header: React.FC = () => {
       <div className="container max-w-7xl mx-auto flex justify-between items-center">
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-2">
-          <span className="font-bold text-xl tracking-tight premium-text-gradient">BetBuddy</span>
+          <span className="font-bold text-xl tracking-tight premium-text-gradient">BETSTER</span>
         </Link>
 
         {/* Balance display */}

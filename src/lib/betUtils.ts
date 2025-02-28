@@ -17,9 +17,9 @@ export const calculatePotentialWinnings = (amount: number, multiplier = 10): num
  * @returns Formatted amount
  */
 export const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('en-IN', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'INR',
     maximumFractionDigits: 0
   }).format(amount);
 };
@@ -111,7 +111,7 @@ export const isBetWinner = (betNumber: number, winningNumber: number | null): bo
  * @returns Formatted date string
  */
 export const formatDate = (date: Date): string => {
-  return new Intl.DateTimeFormat('en-US', {
+  return new Intl.DateTimeFormat('en-IN', {
     month: 'short',
     day: 'numeric',
     hour: 'numeric',
