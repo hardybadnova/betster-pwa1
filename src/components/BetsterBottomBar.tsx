@@ -1,18 +1,16 @@
 
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, Users, Trophy, BarChart3, PlusCircle } from 'lucide-react';
+import { History, Award, MessageSquare } from 'lucide-react';
 
 const BetsterBottomBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
   const navItems = [
-    { path: '/dashboard', label: 'Home', icon: Home },
-    { path: '/lobby', label: 'Games', icon: Users },
-    { path: '/create', label: 'Create', icon: PlusCircle },
-    { path: '/leaderboard', label: 'Rankings', icon: Trophy },
-    { path: '/stats', label: 'Stats', icon: BarChart3 },
+    { path: '/bet-history', label: 'Bet History', icon: History },
+    { path: '/milestones', label: 'Milestones', icon: Award },
+    { path: '/support', label: 'Chat Support', icon: MessageSquare },
   ];
   
   const isActive = (path: string) => {
@@ -25,7 +23,7 @@ const BetsterBottomBar = () => {
         {navItems.map((item) => (
           <button
             key={item.path}
-            className={`flex flex-col items-center justify-center w-16 h-16 ${
+            className={`flex flex-col items-center justify-center w-full h-16 ${
               isActive(item.path) 
                 ? 'text-[#9b87f5]' 
                 : 'text-gray-400 hover:text-gray-300'

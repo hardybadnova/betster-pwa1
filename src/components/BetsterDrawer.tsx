@@ -10,7 +10,10 @@ import {
   HelpCircle, 
   LogOut,
   CreditCard,
-  User
+  User,
+  History,
+  List,
+  MessageSquare
 } from 'lucide-react';
 import { useGameContext } from '@/context/GameContext';
 import { formatCurrency } from '@/lib/betUtils';
@@ -64,7 +67,7 @@ const BetsterDrawer: React.FC<BetsterDrawerProps> = ({
         
         <div className="p-4 border-b border-[#9b87f5]/10">
           <div className="flex items-center">
-            <div className="h-12 w-12 rounded-full bg-[#9b87f5] flex items-center justify-center">
+            <div className="h-12 w-12 rounded-full bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] flex items-center justify-center">
               <span className="text-white font-medium text-lg">{currentUser.name.charAt(0)}</span>
             </div>
             <div className="ml-3">
@@ -82,7 +85,7 @@ const BetsterDrawer: React.FC<BetsterDrawerProps> = ({
                 className="w-full flex items-center px-3 py-2 text-gray-300 hover:bg-white/10 rounded-md"
               >
                 <Home className="h-5 w-5 mr-3" />
-                <span>Home</span>
+                <span>Dashboard</span>
               </button>
             </li>
             <li>
@@ -119,6 +122,24 @@ const BetsterDrawer: React.FC<BetsterDrawerProps> = ({
               >
                 <CreditCard className="h-5 w-5 mr-3" />
                 <span>Wallet</span>
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => handleNavigation('/history')}
+                className="w-full flex items-center px-3 py-2 text-gray-300 hover:bg-white/10 rounded-md"
+              >
+                <History className="h-5 w-5 mr-3" />
+                <span>Game History</span>
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => handleNavigation('/transactions')}
+                className="w-full flex items-center px-3 py-2 text-gray-300 hover:bg-white/10 rounded-md"
+              >
+                <List className="h-5 w-5 mr-3" />
+                <span>Transactions</span>
               </button>
             </li>
           </ul>

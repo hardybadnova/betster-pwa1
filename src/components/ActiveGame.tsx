@@ -167,23 +167,19 @@ const ActiveGame: React.FC<ActiveGameProps> = ({ game }) => {
   };
 
   return (
-    <div className="container max-w-6xl mx-auto px-4 py-6">
+    <div className="container max-w-6xl mx-auto px-4 py-6 pb-20">
+      {/* Game Header with Timer */}
       <div className="mb-6 text-center">
-        <h1 className="text-3xl font-bold mb-2">{game.name}</h1>
+        <h1 className="text-3xl font-bold mb-2 premium-text-gradient">{game.name}</h1>
         
-        <div className="flex items-center justify-center space-x-4 mb-4">
-          <div className="flex items-center">
-            <Users className="h-4 w-4 mr-2 text-muted-foreground" />
-            <span className="text-sm">{game.participants.length} Players</span>
-          </div>
-          
-          {game.status === 'active' && (
-            <div className="flex items-center text-amber-500">
-              <Clock className="h-4 w-4 mr-2" />
-              <span className="text-sm font-medium">Time left: {timeRemaining}</span>
+        {game.status === 'active' && (
+          <div className="flex items-center justify-center space-x-4 mb-4">
+            <div className="py-2 px-6 bg-[#1A1F2C] border border-[#9b87f5]/20 rounded-full flex items-center space-x-3">
+              <Clock className="h-5 w-5 text-amber-500" />
+              <div className="text-xl font-medium">{timeRemaining}</div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
         
         {game.status === 'completed' && game.winningNumber !== null && (
           <div className="bg-primary/10 p-4 rounded-lg inline-flex items-center mb-4">
@@ -197,14 +193,14 @@ const ActiveGame: React.FC<ActiveGameProps> = ({ game }) => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
             <button
               onClick={handleStartGame}
-              className="py-2 px-6 bg-primary text-primary-foreground rounded-md font-medium hover:bg-primary/90 transition-colors w-full sm:w-auto"
+              className="py-2 px-6 premium-button-gradient text-white rounded-md font-medium w-full sm:w-auto"
             >
               Start Game
             </button>
             
             <button
               onClick={handleAddFakePlayers}
-              className="py-2 px-6 bg-secondary text-secondary-foreground rounded-md font-medium hover:bg-secondary/80 transition-colors w-full sm:w-auto"
+              className="py-2 px-6 bg-[#1A1F2C] border border-[#9b87f5]/20 text-white rounded-md font-medium hover:bg-[#9b87f5]/10 transition-colors w-full sm:w-auto"
             >
               Add Players
             </button>
@@ -214,182 +210,183 @@ const ActiveGame: React.FC<ActiveGameProps> = ({ game }) => {
       
       {game.status === 'active' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Player List - Left Side */}
-          <div className="lg:col-span-4 glass-card p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Players (50)</h3>
-              <button 
-                onClick={() => setShowChat(!showChat)}
-                className="p-2 rounded-full bg-secondary hover:bg-secondary/80"
-              >
-                <MessageSquare className="h-4 w-4" />
-              </button>
-            </div>
-            
-            {showChat ? (
-              <div className="h-[500px] flex flex-col">
-                <div className="flex-1 overflow-auto mb-4 px-2">
-                  {chatMessages.length === 0 ? (
-                    <div className="text-center text-muted-foreground py-4">
-                      No messages yet. Start chatting!
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {chatMessages.map((msg, i) => (
-                        <div 
-                          key={i} 
-                          className={`flex ${msg.user === currentUser.name ? 'justify-end' : 'justify-start'}`}
-                        >
-                          <div 
-                            className={`max-w-[80%] rounded-lg px-3 py-2 ${
-                              msg.user === currentUser.name 
-                                ? 'bg-primary text-primary-foreground' 
-                                : 'bg-secondary'
-                            }`}
-                          >
-                            <div className="text-xs opacity-70 mb-1">
-                              {msg.user} • {msg.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                            </div>
-                            <div>{msg.message}</div>
-                          </div>
-                        </div>
-                      ))}
-                      <div ref={chatEndRef} />
-                    </div>
-                  )}
-                </div>
-                
-                <form onSubmit={handleSendMessage} className="flex gap-2">
-                  <input
-                    type="text"
-                    value={chatMessage}
-                    onChange={(e) => setChatMessage(e.target.value)}
-                    placeholder="Type a message..."
-                    className="flex-1 bg-secondary px-3 py-2 rounded-md"
-                  />
-                  <button 
-                    type="submit"
-                    className="bg-primary text-primary-foreground px-3 py-2 rounded-md"
+          {/* Number Selection - Center Top */}
+          <div className="lg:col-span-12 order-2 lg:order-1">
+            <div className="premium-glass-card p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold premium-text-gradient">Choose a Number (0-15)</h3>
+                <div className="flex space-x-2">
+                  <div className="py-1 px-3 bg-[#1A1F2C] border border-[#9b87f5]/20 rounded-full text-xs flex items-center">
+                    <Clock className="h-3 w-3 text-amber-500 mr-1" />
+                    <span>{timeRemaining}</span>
+                  </div>
+                  <button
+                    onClick={handleViewHint}
+                    disabled={showHint}
+                    className="flex items-center space-x-1 text-xs py-1 px-3 rounded-full bg-[#1A1F2C] border border-[#9b87f5]/20 hover:bg-[#9b87f5]/10 disabled:opacity-50"
                   >
-                    Send
+                    <Eye className="h-3 w-3" />
+                    <span>Hint ({formatCurrency(game.minBet)})</span>
                   </button>
-                </form>
-              </div>
-            ) : (
-              <div className="h-[500px] overflow-auto thin-scrollbar">
-                {getPlayers().map((player) => (
-                  <div 
-                    key={player.id}
-                    className="flex items-center p-2 border-b border-border hover:bg-secondary/20 transition-colors"
-                  >
-                    <div className="h-8 w-8 rounded-full overflow-hidden mr-3">
-                      <img src={player.avatar} alt={player.name} className="h-full w-full object-cover" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-medium">
-                        {player.name} {player.id === currentUser.id && <span className="text-primary">(You)</span>}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {player.games} games • {player.wins} wins
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          
-          {/* Right Side: Number Pad and Betting */}
-          <div className="lg:col-span-8">
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-              {/* Number Selection */}
-              <div className="md:col-span-3">
-                <div className="glass-card p-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold">Choose a Number (0-15)</h3>
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={handleViewHint}
-                        disabled={showHint}
-                        className="flex items-center space-x-1 text-xs py-1 px-3 rounded-md bg-secondary/80 hover:bg-secondary disabled:opacity-50"
-                      >
-                        <Eye className="h-3 w-3" />
-                        <span>Hint ({formatCurrency(game.minBet)})</span>
-                      </button>
-                    </div>
-                  </div>
-                  
-                  {showHint ? (
-                    <div className="mb-6">
-                      <div className="mb-3 text-xs text-muted-foreground flex items-center">
-                        <ChartBar className="h-3 w-3 mr-1" />
-                        Last 10 Games Statistics
-                      </div>
-                      
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
-                          <thead>
-                            <tr className="border-b border-border">
-                              <th className="text-left py-2 px-2">Date</th>
-                              <th className="text-center py-2 px-2">Winning #</th>
-                              <th className="text-center py-2 px-2">Players</th>
-                              <th className="text-center py-2 px-2">Most Picked</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {getPastGamesData().map((gameData) => (
-                              <tr key={gameData.id} className="border-b border-border hover:bg-secondary/20">
-                                <td className="py-2 px-2">
-                                  {gameData.date.toLocaleDateString()}
-                                </td>
-                                <td className="py-2 px-2 text-center font-medium text-primary">
-                                  {gameData.winningNumber}
-                                </td>
-                                <td className="py-2 px-2 text-center">
-                                  {gameData.players}
-                                </td>
-                                <td className="py-2 px-2 text-center text-amber-500">
-                                  {gameData.mostPickedNumber}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                      
-                      <button 
-                        onClick={() => setShowHint(false)}
-                        className="mt-4 text-xs text-primary hover:underline"
-                      >
-                        Close Hints
-                      </button>
-                    </div>
-                  ) : null}
-                  
-                  <NumberPad 
-                    onSelectNumber={handleSelectNumber}
-                    selectedNumber={selectedNumber}
-                    maxNumber={15} // Limit numbers to 0-15
-                  />
                 </div>
               </div>
               
-              {/* Betting Card */}
-              <div className="md:col-span-2">
-                <BettingCard 
-                  gameId={game.id}
-                  selectedNumber={selectedNumber}
-                  onSuccess={handleBetSuccess}
-                  onError={handleBetError}
-                />
+              {showHint && (
+                <div className="mb-6">
+                  <div className="mb-3 text-xs text-muted-foreground flex items-center">
+                    <ChartBar className="h-3 w-3 mr-1" />
+                    Last 10 Games Statistics
+                  </div>
+                  
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm premium-table">
+                      <thead>
+                        <tr>
+                          <th className="text-left py-2 px-2">Date</th>
+                          <th className="text-center py-2 px-2">Winning #</th>
+                          <th className="text-center py-2 px-2">Players</th>
+                          <th className="text-center py-2 px-2">Most Picked</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {getPastGamesData().map((gameData) => (
+                          <tr key={gameData.id}>
+                            <td className="py-2 px-2">
+                              {gameData.date.toLocaleDateString()}
+                            </td>
+                            <td className="py-2 px-2 text-center font-medium text-[#9b87f5]">
+                              {gameData.winningNumber}
+                            </td>
+                            <td className="py-2 px-2 text-center">
+                              {gameData.players}
+                            </td>
+                            <td className="py-2 px-2 text-center text-amber-500">
+                              {gameData.mostPickedNumber}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  
+                  <button 
+                    onClick={() => setShowHint(false)}
+                    className="mt-4 text-xs text-[#9b87f5] hover:underline"
+                  >
+                    Close Hints
+                  </button>
+                </div>
+              )}
+              
+              <NumberPad 
+                onSelectNumber={handleSelectNumber}
+                selectedNumber={selectedNumber}
+                maxNumber={15} // Limit numbers to 0-15
+              />
+            </div>
+          </div>
+          
+          {/* Betting Card - Left Side */}
+          <div className="lg:col-span-4 order-1 lg:order-2">
+            <BettingCard 
+              gameId={game.id}
+              selectedNumber={selectedNumber}
+              onSuccess={handleBetSuccess}
+              onError={handleBetError}
+            />
+          </div>
+          
+          {/* Player List - Right Side */}
+          <div className="lg:col-span-8 order-3">
+            <div className="premium-glass-card p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold premium-text-gradient">Players (50)</h3>
+                <button 
+                  onClick={() => setShowChat(!showChat)}
+                  className="p-2 rounded-full bg-[#1A1F2C] border border-[#9b87f5]/20 hover:bg-[#9b87f5]/10"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                </button>
               </div>
+              
+              {showChat ? (
+                <div className="h-[350px] flex flex-col">
+                  <div className="flex-1 overflow-auto mb-4 px-2 thin-scrollbar">
+                    {chatMessages.length === 0 ? (
+                      <div className="text-center text-muted-foreground py-4">
+                        No messages yet. Start chatting!
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {chatMessages.map((msg, i) => (
+                          <div 
+                            key={i} 
+                            className={`flex ${msg.user === currentUser.name ? 'justify-end' : 'justify-start'}`}
+                          >
+                            <div 
+                              className={`max-w-[80%] rounded-lg px-3 py-2 ${
+                                msg.user === currentUser.name 
+                                  ? 'bg-[#9b87f5] text-white' 
+                                  : 'bg-[#1A1F2C]'
+                              }`}
+                            >
+                              <div className="text-xs opacity-70 mb-1">
+                                {msg.user} • {msg.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                              </div>
+                              <div>{msg.message}</div>
+                            </div>
+                          </div>
+                        ))}
+                        <div ref={chatEndRef} />
+                      </div>
+                    )}
+                  </div>
+                  
+                  <form onSubmit={handleSendMessage} className="flex gap-2">
+                    <input
+                      type="text"
+                      value={chatMessage}
+                      onChange={(e) => setChatMessage(e.target.value)}
+                      placeholder="Type a message..."
+                      className="flex-1 bg-[#1A1F2C] border border-[#9b87f5]/20 px-3 py-2 rounded-md text-white"
+                    />
+                    <button 
+                      type="submit"
+                      className="premium-button-gradient px-3 py-2 rounded-md text-white"
+                    >
+                      Send
+                    </button>
+                  </form>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 h-[350px] overflow-y-auto thin-scrollbar">
+                  {getPlayers().map((player) => (
+                    <div 
+                      key={player.id}
+                      className="flex flex-col items-center p-2 bg-[#1A1F2C]/50 border border-[#9b87f5]/10 rounded-lg hover:bg-[#9b87f5]/10 transition-colors"
+                    >
+                      <div className="h-12 w-12 rounded-full overflow-hidden mb-2 border-2 border-[#9b87f5]/20">
+                        <img src={player.avatar} alt={player.name} className="h-full w-full object-cover" />
+                      </div>
+                      <div className="text-center">
+                        <div className="font-medium text-sm truncate w-full">
+                          {player.name} {player.id === currentUser.id && <span className="text-[#9b87f5]">•</span>}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {player.wins} wins
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
       )}
       
       {game.status === 'waiting' && (
-        <div className="glass-card p-8 text-center">
+        <div className="premium-glass-card p-8 text-center">
           <h3 className="text-xl font-medium mb-4">Waiting for Game to Start</h3>
           <p className="text-muted-foreground">
             Once the game starts, you'll be able to place bets on numbers from 0 to 15.
@@ -398,15 +395,15 @@ const ActiveGame: React.FC<ActiveGameProps> = ({ game }) => {
       )}
       
       {game.status === 'completed' && (
-        <div className="glass-card p-8 text-center">
+        <div className="premium-glass-card p-8 text-center">
           <h3 className="text-xl font-medium mb-4">Game Completed</h3>
           <p className="text-muted-foreground mb-4">
             This game is already finished. Check out other active games in the lobby.
           </p>
           <div className="mt-6">
             <button
-              onClick={() => window.location.href = '/lobby'}
-              className="py-2 px-6 bg-primary text-primary-foreground rounded-md font-medium hover:bg-primary/90 transition-colors"
+              onClick={() => navigate('/lobby')}
+              className="py-2 px-6 premium-button-gradient text-white rounded-md font-medium"
             >
               Back to Lobby
             </button>
