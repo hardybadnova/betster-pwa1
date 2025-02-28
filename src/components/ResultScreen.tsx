@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Trophy, Crown, Award, ChevronRight, BarChart3, Users } from 'lucide-react';
+import { Trophy, Crown, Award, ChevronRight, BarChart3, Users, Swords } from 'lucide-react';
 import { Game, useGameContext } from '@/context/GameContext';
 import { formatCurrency } from '@/lib/betUtils';
 
@@ -100,7 +100,7 @@ const ResultScreen: React.FC<ResultScreenProps> = ({ game, gameType, onPlayAgain
   // Determine which icon to show based on game type
   const getWinnerIcon = () => {
     switch (gameType) {
-      case 'bluff': return <Sword className="h-16 w-16 text-[#9b87f5]" />;
+      case 'bluff': return <Swords className="h-16 w-16 text-[#9b87f5]" />;
       case 'top-spot': return <Crown className="h-16 w-16 text-amber-500" />;
       case 'jackpot': return <Award className="h-16 w-16 text-emerald-500" />;
     }

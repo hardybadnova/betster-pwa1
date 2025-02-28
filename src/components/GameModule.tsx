@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Crown, Award, Sword, Info } from 'lucide-react';
+import { ArrowRight, Crown, Award, Swords, Info } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 interface GameModuleProps {
@@ -24,7 +24,7 @@ const GameModule: React.FC<GameModuleProps> = ({
   const getIcon = () => {
     switch (type) {
       case 'bluff':
-        return <Sword className="h-10 w-10 text-[#9b87f5]" />;
+        return <Swords className="h-10 w-10 text-[#9b87f5]" />;
       case 'top-spot':
         return <Crown className="h-10 w-10 text-amber-500" />;
       case 'jackpot':
