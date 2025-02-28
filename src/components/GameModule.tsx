@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Crown, Award, Sword, Info } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -54,13 +54,15 @@ const GameModule: React.FC<GameModuleProps> = ({
         return (
           <div className="space-y-2">
             <h4 className="font-semibold text-[#9b87f5]">Bluff the Tough</h4>
-            <p className="text-sm text-gray-300">A strategic game where players try to choose the least selected number between 0-15. The player who selects the number that is chosen by the fewest other players wins.</p>
+            <p className="text-sm text-gray-300">A strategic game where 50 players choose numbers between 0-15. The player who selects the least chosen number wins. Think differently to outsmart the crowd.</p>
             <div className="pt-2 border-t border-[#9b87f5]/10 mt-2">
               <h5 className="text-xs font-semibold text-gray-300">Prize Distribution:</h5>
               <ul className="text-xs text-gray-400 list-disc pl-4 mt-1">
-                <li>1st Place: 50% of pool</li>
-                <li>2nd Place: 30% of pool</li>
-                <li>3rd Place: 20% of pool</li>
+                <li>1st Place (least chosen): 50% of pool</li>
+                <li>2nd Place (second least): 25% of pool</li>
+                <li>3rd Place (third least): 15% of pool</li>
+                <li>28% GST tax deducted</li>
+                <li>10% house fee</li>
               </ul>
             </div>
           </div>
@@ -69,13 +71,13 @@ const GameModule: React.FC<GameModuleProps> = ({
         return (
           <div className="space-y-2">
             <h4 className="font-semibold text-amber-500">Top Spot</h4>
-            <p className="text-sm text-gray-300">A high-stakes game where you aim to claim the top spot by selecting the winning number between 0-15. The competition is intense as all players try to predict the lucky number.</p>
+            <p className="text-sm text-gray-300">Choose a number between 0-15. The player who selects the least chosen number wins the top spot and takes almost the entire prize pool.</p>
             <div className="pt-2 border-t border-amber-500/10 mt-2">
               <h5 className="text-xs font-semibold text-gray-300">Prize Distribution:</h5>
               <ul className="text-xs text-gray-400 list-disc pl-4 mt-1">
-                <li>1st Place: 60% of pool</li>
-                <li>2nd Place: 25% of pool</li>
-                <li>3rd Place: 15% of pool</li>
+                <li>1st Place (least chosen): 90% of pool</li>
+                <li>28% GST tax deducted</li>
+                <li>10% house fee</li>
               </ul>
             </div>
           </div>
@@ -84,13 +86,13 @@ const GameModule: React.FC<GameModuleProps> = ({
         return (
           <div className="space-y-2">
             <h4 className="font-semibold text-emerald-500">Jackpot Horse</h4>
-            <p className="text-sm text-gray-300">The biggest game in Betster with massive prize pools. Choose your number between 0-15 and compete with up to 10,000 players for the grand jackpot.</p>
+            <p className="text-sm text-gray-300">The biggest game in Betster with 10,000 players. Choose your number between 0-200 for a chance to win a massive jackpot. Runs once every 24 hours.</p>
             <div className="pt-2 border-t border-emerald-500/10 mt-2">
               <h5 className="text-xs font-semibold text-gray-300">Prize Distribution:</h5>
               <ul className="text-xs text-gray-400 list-disc pl-4 mt-1">
-                <li>1st Place: 70% of pool</li>
-                <li>2nd Place: 20% of pool</li>
-                <li>3rd Place: 10% of pool</li>
+                <li>1st Place (least chosen): 90% of pool</li>
+                <li>28% GST tax deducted</li>
+                <li>10% house fee</li>
               </ul>
             </div>
           </div>

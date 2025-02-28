@@ -6,13 +6,18 @@ import { Game, useGameContext } from '@/context/GameContext';
 import { calculateTimeRemaining, formatCurrency } from '@/lib/betUtils';
 import BettingCard from './BettingCard';
 import NumberPad from './NumberPad';
+import ResultScreen from './ResultScreen';
 import { Users, Clock, Trophy, MessageSquare, Eye, ChartBar } from 'lucide-react';
 
 interface ActiveGameProps {
   game: Game;
+  gameType?: 'bluff' | 'top-spot' | 'jackpot';
 }
 
-const ActiveGame: React.FC<ActiveGameProps> = ({ game }) => {
+const ActiveGame: React.FC<ActiveGameProps> = ({ 
+  game,
+  gameType = 'bluff' // Default to bluff game type
+}) => {
   const navigate = useNavigate();
   const [selectedNumber, setSelectedNumber] = useState<number | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<string>('');
@@ -20,6 +25,7 @@ const ActiveGame: React.FC<ActiveGameProps> = ({ game }) => {
   const [showHint, setShowHint] = useState(false);
   const [chatMessage, setChatMessage] = useState('');
   const [chatMessages, setChatMessages] = useState<{user: string, message: string, timestamp: Date}[]>([]);
+  const [showResults, setShowResults] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   
   const { startGame, addFakePlayers, currentUser, updateBalance } = useGameContext();
@@ -48,11 +54,17 @@ const ActiveGame: React.FC<ActiveGameProps> = ({ game }) => {
     });
   };
 
-  // Update time remaining
+  // Update time remaining and check for game completion
   useEffect(() => {
     const updateTime = () => {
       if (game.status === 'active' && game.endTime) {
-        setTimeRemaining(calculateTimeRemaining(game.endTime));
+        const remaining = calculateTimeRemaining(game.endTime);
+        setTimeRemaining(remaining);
+        
+        // Show results when game ends
+        if (remaining === 'Ended' && !showResults) {
+          setShowResults(true);
+        }
       }
     };
 
@@ -60,7 +72,7 @@ const ActiveGame: React.FC<ActiveGameProps> = ({ game }) => {
     const interval = setInterval(updateTime, 1000);
 
     return () => clearInterval(interval);
-  }, [game]);
+  }, [game, showResults]);
 
   // Handle start game
   const handleStartGame = () => {
@@ -71,12 +83,20 @@ const ActiveGame: React.FC<ActiveGameProps> = ({ game }) => {
     });
   };
 
+  // Handle play again
+  const handlePlayAgain = () => {
+    setShowResults(false);
+    // Navigate to lobby or another game
+    navigate('/lobby');
+  };
+
   // Handle add fake players
   const handleAddFakePlayers = () => {
-    addFakePlayers(game.id, 3);
+    const count = gameType === 'jackpot' ? 1000 : 10;
+    addFakePlayers(game.id, count);
     toast({
       title: 'Players joined',
-      description: '3 new players have joined the game',
+      description: `${count} new players have joined the game`,
     });
   };
 
@@ -103,8 +123,8 @@ const ActiveGame: React.FC<ActiveGameProps> = ({ game }) => {
 
   // Handle viewing hints
   const handleViewHint = () => {
-    // Calculate 1% of entry fee (using minBet as proxy for entry fee)
-    const hintFee = game.minBet;
+    // Calculate hint fee based on game type
+    const hintFee = gameType === 'jackpot' ? game.minBet * 5 : game.minBet;
     
     // Check if user has enough balance
     if (currentUser.balance < hintFee) {
@@ -132,14 +152,20 @@ const ActiveGame: React.FC<ActiveGameProps> = ({ game }) => {
     return Array.from({ length: 10 }).map((_, i) => ({
       id: i,
       date: new Date(Date.now() - (i * 24 * 60 * 60 * 1000)), // One day ago per entry
-      winningNumber: Math.floor(Math.random() * 16),
-      players: 30 + Math.floor(Math.random() * 20),
-      mostPickedNumber: Math.floor(Math.random() * 16)
+      winningNumber: gameType === 'jackpot' 
+        ? Math.floor(Math.random() * 200) 
+        : Math.floor(Math.random() * 16),
+      players: gameType === 'jackpot' ? 8000 + Math.floor(Math.random() * 2000) : 30 + Math.floor(Math.random() * 20),
+      mostPickedNumber: gameType === 'jackpot' 
+        ? Math.floor(Math.random() * 200) 
+        : Math.floor(Math.random() * 16)
     }));
   };
 
   // Generate fake player data
   const getPlayers = () => {
+    const playerCount = gameType === 'jackpot' ? 100 : 50;
+    
     const players = [
       { id: currentUser.id, name: currentUser.name, avatar: currentUser.avatar, games: 24, wins: 5 },
       ...game.participants
@@ -153,9 +179,9 @@ const ActiveGame: React.FC<ActiveGameProps> = ({ game }) => {
         }))
     ];
     
-    // Ensure we have exactly 50 players by adding or removing
-    if (players.length < 50) {
-      const extraPlayers = Array.from({ length: 50 - players.length }).map((_, i) => ({
+    // Ensure we have the correct number of players
+    if (players.length < playerCount) {
+      const extraPlayers = Array.from({ length: playerCount - players.length }).map((_, i) => ({
         id: `extra-${i}`,
         name: `Player${players.length + i + 1}`,
         avatar: `https://api.dicebear.com/7.x/identicon/svg?seed=extra-${i}`,
@@ -165,8 +191,13 @@ const ActiveGame: React.FC<ActiveGameProps> = ({ game }) => {
       return [...players, ...extraPlayers];
     }
     
-    return players.slice(0, 50); // Limit to 50 players
+    return players.slice(0, playerCount);
   };
+  
+  // Show the result screen if game is completed or results are ready to show
+  if (showResults || game.status === 'completed') {
+    return <ResultScreen game={game} gameType={gameType} onPlayAgain={handlePlayAgain} />;
+  }
 
   return (
     <div className="container max-w-6xl mx-auto px-4 py-6 pb-20">
@@ -216,7 +247,9 @@ const ActiveGame: React.FC<ActiveGameProps> = ({ game }) => {
           <div className="lg:col-span-12 order-2 lg:order-1">
             <div className="premium-glass-card p-4">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold premium-text-gradient">Choose a Number (0-15)</h3>
+                <h3 className="text-lg font-semibold premium-text-gradient">
+                  {gameType === 'jackpot' ? 'Choose a Number (0-200)' : 'Choose a Number (0-15)'}
+                </h3>
                 <div className="flex space-x-2">
                   <div className="py-1 px-3 bg-[#1A1F2C] border border-[#9b87f5]/20 rounded-full text-xs flex items-center">
                     <Clock className="h-3 w-3 text-amber-500 mr-1" />
@@ -228,7 +261,7 @@ const ActiveGame: React.FC<ActiveGameProps> = ({ game }) => {
                     className="flex items-center space-x-1 text-xs py-1 px-3 rounded-full bg-[#1A1F2C] border border-[#9b87f5]/20 hover:bg-[#9b87f5]/10 disabled:opacity-50"
                   >
                     <Eye className="h-3 w-3" />
-                    <span>Hint ({formatCurrency(game.minBet)})</span>
+                    <span>Hint ({formatCurrency(gameType === 'jackpot' ? game.minBet * 5 : game.minBet)})</span>
                   </button>
                 </div>
               </div>
@@ -283,7 +316,7 @@ const ActiveGame: React.FC<ActiveGameProps> = ({ game }) => {
               <NumberPad 
                 onSelectNumber={handleSelectNumber}
                 selectedNumber={selectedNumber}
-                maxNumber={15} // Limit numbers to 0-15
+                maxNumber={gameType === 'jackpot' ? 200 : 15}
               />
             </div>
           </div>
@@ -295,6 +328,7 @@ const ActiveGame: React.FC<ActiveGameProps> = ({ game }) => {
               selectedNumber={selectedNumber}
               onSuccess={handleBetSuccess}
               onError={handleBetError}
+              gameType={gameType}
             />
           </div>
           
@@ -302,7 +336,9 @@ const ActiveGame: React.FC<ActiveGameProps> = ({ game }) => {
           <div className="lg:col-span-8 order-3">
             <div className="premium-glass-card p-4">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold premium-text-gradient">Players (50)</h3>
+                <h3 className="text-lg font-semibold premium-text-gradient">
+                  Players ({gameType === 'jackpot' ? '10,000' : '50'})
+                </h3>
                 <button 
                   onClick={() => setShowChat(!showChat)}
                   className="p-2 rounded-full bg-[#1A1F2C] border border-[#9b87f5]/20 hover:bg-[#9b87f5]/10"
@@ -391,25 +427,17 @@ const ActiveGame: React.FC<ActiveGameProps> = ({ game }) => {
         <div className="premium-glass-card p-8 text-center">
           <h3 className="text-xl font-medium mb-4">Waiting for Game to Start</h3>
           <p className="text-muted-foreground">
-            Once the game starts, you'll be able to place bets on numbers from 0 to 15.
+            {gameType === 'jackpot' 
+              ? 'Once the game starts, you\'ll be able to place bets on numbers from 0 to 200.'
+              : 'Once the game starts, you\'ll be able to place bets on numbers from 0 to 15.'}
           </p>
-        </div>
-      )}
-      
-      {game.status === 'completed' && (
-        <div className="premium-glass-card p-8 text-center">
-          <h3 className="text-xl font-medium mb-4">Game Completed</h3>
-          <p className="text-muted-foreground mb-4">
-            This game is already finished. Check out other active games in the lobby.
+          <p className="text-muted-foreground mt-2">
+            {gameType === 'bluff' 
+              ? 'The player who picks the least chosen number wins 50% of the pool!'
+              : gameType === 'top-spot'
+                ? 'The player who picks the least chosen number wins 90% of the pool!'
+                : 'The player who picks the least chosen number out of 10,000 players wins 90% of the massive pool!'}
           </p>
-          <div className="mt-6">
-            <button
-              onClick={() => navigate('/lobby')}
-              className="py-2 px-6 premium-button-gradient text-white rounded-md font-medium"
-            >
-              Back to Lobby
-            </button>
-          </div>
         </div>
       )}
     </div>

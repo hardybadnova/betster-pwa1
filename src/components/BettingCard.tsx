@@ -2,20 +2,22 @@
 import React, { useState } from 'react';
 import { useGameContext } from '@/context/GameContext';
 import { calculatePotentialWinnings, formatCurrency } from '@/lib/betUtils';
-import { ChevronUp, ChevronDown } from 'lucide-react';
+import { ChevronUp, ChevronDown, AlertCircle } from 'lucide-react';
 
 interface BettingCardProps {
   gameId: string;
   selectedNumber: number | null;
   onSuccess?: () => void;
   onError?: (message: string) => void;
+  gameType?: 'bluff' | 'top-spot' | 'jackpot';
 }
 
 const BettingCard: React.FC<BettingCardProps> = ({ 
   gameId, 
   selectedNumber,
   onSuccess,
-  onError
+  onError,
+  gameType = 'bluff'
 }) => {
   const { placeBet, games, currentUser } = useGameContext();
   const [betAmount, setBetAmount] = useState<number>(100);
@@ -30,19 +32,33 @@ const BettingCard: React.FC<BettingCardProps> = ({
   // Calculate min, max bet from game settings
   const { minBet, maxBet } = game;
   
+  // Calculate potential winnings based on game type
+  const calculateWinnings = (): number => {
+    const totalPool = game.bets.reduce((sum, bet) => sum + bet.amount, 0) + betAmount;
+    const afterTaxAndFee = totalPool * 0.72 * 0.9; // Deduct 28% GST and 10% house fee
+    
+    if (gameType === 'bluff') {
+      return afterTaxAndFee * 0.5; // 50% of pool for first place
+    } else {
+      return afterTaxAndFee; // 90% of pool for first place in top-spot and jackpot
+    }
+  };
+  
   // Calculate potential winnings
-  const winnings = calculatePotentialWinnings(betAmount);
+  const winnings = game.bets.length > 0 ? calculateWinnings() : calculatePotentialWinnings(betAmount);
   
   // Handle bet amount change
   const handleIncrease = () => {
-    if (betAmount + 100 <= maxBet) {
-      setBetAmount(betAmount + 100);
+    const incrementAmount = gameType === 'jackpot' ? 500 : 100;
+    if (betAmount + incrementAmount <= maxBet) {
+      setBetAmount(betAmount + incrementAmount);
     }
   };
   
   const handleDecrease = () => {
-    if (betAmount - 100 >= minBet) {
-      setBetAmount(betAmount - 100);
+    const decrementAmount = gameType === 'jackpot' ? 500 : 100;
+    if (betAmount - decrementAmount >= minBet) {
+      setBetAmount(betAmount - decrementAmount);
     }
   };
   
@@ -64,6 +80,41 @@ const BettingCard: React.FC<BettingCardProps> = ({
       onSuccess?.();
     } else {
       onError?.('Failed to place bet. Check game status and your balance.');
+    }
+  };
+
+  // Prize distribution details based on game type
+  const getPrizeDistribution = () => {
+    if (gameType === 'bluff') {
+      return (
+        <div className="text-xs text-gray-400 mt-2 bg-[#1A1F2C] rounded-lg p-3">
+          <div className="flex items-center mb-1">
+            <AlertCircle className="h-3 w-3 mr-1 text-[#9b87f5]" />
+            <span className="font-medium text-white">Prize Distribution</span>
+          </div>
+          <ul className="list-disc list-inside space-y-1">
+            <li>1st place (least chosen number): 50% of pool</li>
+            <li>2nd place: 25% of pool</li>
+            <li>3rd place: 15% of pool</li>
+            <li>28% GST tax deducted</li>
+            <li>10% house fee</li>
+          </ul>
+        </div>
+      );
+    } else {
+      return (
+        <div className="text-xs text-gray-400 mt-2 bg-[#1A1F2C] rounded-lg p-3">
+          <div className="flex items-center mb-1">
+            <AlertCircle className="h-3 w-3 mr-1 text-amber-500" />
+            <span className="font-medium text-white">Prize Distribution</span>
+          </div>
+          <ul className="list-disc list-inside space-y-1">
+            <li>Winner (least chosen number): 90% of pool</li>
+            <li>28% GST tax deducted</li>
+            <li>10% house fee</li>
+          </ul>
+        </div>
+      );
     }
   };
 
@@ -109,10 +160,12 @@ const BettingCard: React.FC<BettingCardProps> = ({
           <span className="font-bold text-emerald-500">{formatCurrency(winnings)}</span>
         </div>
         
-        <div className="flex items-center justify-between text-xs text-muted-foreground mb-6">
+        <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
           <span>Min: {formatCurrency(minBet)}</span>
           <span>Max: {formatCurrency(maxBet)}</span>
         </div>
+        
+        {getPrizeDistribution()}
       </div>
       
       <button
@@ -130,7 +183,7 @@ const BettingCard: React.FC<BettingCardProps> = ({
       </button>
       
       <p className="text-xs text-muted-foreground text-center mt-2">
-        10x payout if your number is drawn
+        Choose the least selected number to win!
       </p>
     </div>
   );
