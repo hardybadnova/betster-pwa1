@@ -5,12 +5,16 @@ import { Menu, Bell, Search, Wallet, CreditCard, ArrowDownLeft, ArrowUpRight } f
 import { useGameContext } from '@/context/GameContext';
 import UserBalance from './UserBalance';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { formatCurrency } from '@/lib/betUtils';
 
 interface BetsterAppBarProps {
   onOpenDrawer: () => void;
   title?: string;
 }
+
+// Format currency with rupee symbol
+const formatRupees = (amount: number) => {
+  return `₹${amount.toLocaleString('en-IN')}`;
+};
 
 const BetsterAppBar: React.FC<BetsterAppBarProps> = ({ 
   onOpenDrawer,
@@ -51,7 +55,7 @@ const BetsterAppBar: React.FC<BetsterAppBarProps> = ({
               <div className="p-4 border-b border-[#9b87f5]/10">
                 <h3 className="font-semibold text-white">Wallet</h3>
                 <p className="text-gray-400 text-sm">Current Balance</p>
-                <p className="text-xl font-bold premium-text-gradient">{formatCurrency(currentUser.balance)}</p>
+                <p className="text-xl font-bold premium-text-gradient">{formatRupees(currentUser.balance)}</p>
               </div>
               <div className="grid grid-cols-2 divide-x divide-[#9b87f5]/10">
                 <button 

@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { useGameContext } from '@/context/GameContext';
-import { formatCurrency } from '@/lib/betUtils';
 import { Coins } from 'lucide-react';
 
 interface UserBalanceProps {
@@ -31,13 +30,18 @@ const UserBalance: React.FC<UserBalanceProps> = ({
     lg: 'h-6 w-6',
   };
 
+  // Format currency with rupee symbol
+  const formatRupees = (amount: number) => {
+    return `₹${amount.toLocaleString('en-IN')}`;
+  };
+
   return (
     <div className={`flex items-center ${className}`}>
       {showIcon && (
         <Coins className={`${iconSizeClasses[size]} mr-2 text-amber-500`} />
       )}
       <span className={`${textSizeClasses[size]} font-medium`}>
-        {formatCurrency(currentUser.balance)}
+        {formatRupees(currentUser.balance)}
       </span>
     </div>
   );

@@ -1,121 +1,78 @@
 
-import { Game } from '@/context/GameContext';
+// betUtils.ts - Utility functions for betting operations
 
 /**
- * Calculates the potential winnings for a bet
- * @param amount Bet amount
- * @param multiplier Win multiplier (default: 10)
- * @returns Potential winnings
+ * Format a number as currency with rupee symbol
  */
-export const calculatePotentialWinnings = (amount: number, multiplier = 10): number => {
-  return amount * multiplier;
+export const formatCurrency = (value: number): string => {
+  return `₹${value.toLocaleString('en-IN')}`;
 };
 
 /**
- * Formats currency for display
- * @param amount Amount to format
- * @returns Formatted amount
+ * Calculate the payout amount based on bet amount and multiplier
  */
-export const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    maximumFractionDigits: 0
-  }).format(amount);
+export const calculatePayout = (betAmount: number, multiplier: number): number => {
+  return betAmount * multiplier;
 };
 
 /**
- * Calculates time remaining in a game
- * @param endTime End time of the game
- * @returns Time remaining as a formatted string
+ * Calculate fees for a transaction
  */
-export const calculateTimeRemaining = (endTime: Date | null): string => {
-  if (!endTime) return 'Not started';
-  
-  const now = new Date();
-  const diff = endTime.getTime() - now.getTime();
-  
-  if (diff <= 0) return 'Ended';
-  
-  const minutes = Math.floor(diff / (1000 * 60));
-  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-  
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+export const calculateFees = (amount: number, feePercentage: number): number => {
+  return amount * (feePercentage / 100);
 };
 
 /**
- * Gets the status of a game with a formatted label
- * @param game Game object
- * @returns Formatted status
+ * Check if a user has sufficient balance for a bet
  */
-export const getGameStatus = (game: Game): { label: string; color: string } => {
-  switch (game.status) {
-    case 'waiting':
-      return { label: 'Waiting for Players', color: 'bg-amber-500' };
-    case 'active':
-      return { label: 'Betting Open', color: 'bg-emerald-500' };
-    case 'completed':
-      return { label: 'Game Ended', color: 'bg-neutral-500' };
-    default:
-      return { label: 'Unknown', color: 'bg-gray-500' };
+export const hasSufficientBalance = (balance: number, betAmount: number): boolean => {
+  return balance >= betAmount;
+};
+
+/**
+ * Generate a random result for a game
+ */
+export const generateRandomResult = (min: number, max: number): number => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+/**
+ * Find the least frequently chosen number in an array
+ */
+export const findLeastChosenNumber = (numbers: number[]): number | null => {
+  if (numbers.length === 0) return null;
+  
+  // Count frequency of each number
+  const frequency: Record<number, number> = {};
+  numbers.forEach(num => {
+    frequency[num] = (frequency[num] || 0) + 1;
+  });
+  
+  // Find the number with minimum frequency
+  let minFreq = Infinity;
+  let leastChosenNumber = null;
+  
+  for (const [numStr, freq] of Object.entries(frequency)) {
+    const num = parseInt(numStr);
+    if (freq < minFreq) {
+      minFreq = freq;
+      leastChosenNumber = num;
+    }
   }
-};
-
-/**
- * Generates a random avatar URL
- * @param seed Seed for the avatar
- * @returns Avatar URL
- */
-export const generateAvatar = (seed: string): string => {
-  return `https://api.dicebear.com/7.x/identicon/svg?seed=${seed}`;
-};
-
-/**
- * Get a subset of possible betting numbers based on a pattern
- * (e.g., "even", "odd", "high", "low")
- * @param pattern The pattern to filter by
- * @returns Array of numbers matching the pattern
- */
-export const getNumbersByPattern = (pattern: 'even' | 'odd' | 'high' | 'low' | 'all'): number[] => {
-  const allNumbers = Array.from({ length: 100 }, (_, i) => i + 1);
   
-  switch (pattern) {
-    case 'even':
-      return allNumbers.filter(num => num % 2 === 0);
-    case 'odd':
-      return allNumbers.filter(num => num % 2 !== 0);
-    case 'high':
-      return allNumbers.filter(num => num > 50);
-    case 'low':
-      return allNumbers.filter(num => num <= 50);
-    case 'all':
-    default:
-      return allNumbers;
-  }
+  return leastChosenNumber;
 };
 
 /**
- * Determine if a bet is a winner
- * @param betNumber Number bet on
- * @param winningNumber Winning number
- * @returns Whether the bet is a winner
+ * Get an appropriate CSS class based on a number's popularity
  */
-export const isBetWinner = (betNumber: number, winningNumber: number | null): boolean => {
-  if (winningNumber === null) return false;
-  return betNumber === winningNumber;
-};
-
-/**
- * Format a date for display
- * @param date Date to format
- * @returns Formatted date string
- */
-export const formatDate = (date: Date): string => {
-  return new Intl.DateTimeFormat('en-IN', {
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true
-  }).format(date);
+export const getNumberPopularityClass = (frequency: number, maxFrequency: number): string => {
+  const ratio = frequency / maxFrequency;
+  
+  if (ratio === 0) return 'bg-gray-200 text-gray-600';
+  if (ratio < 0.2) return 'bg-blue-100 text-blue-700';
+  if (ratio < 0.4) return 'bg-green-100 text-green-700';
+  if (ratio < 0.6) return 'bg-yellow-100 text-yellow-700';
+  if (ratio < 0.8) return 'bg-orange-100 text-orange-700';
+  return 'bg-red-100 text-red-700';
 };

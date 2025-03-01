@@ -1,13 +1,16 @@
 
 import React, { useMemo, useState } from 'react';
 import { useGameContext } from '@/context/GameContext';
-import { formatCurrency } from '@/lib/betUtils';
 import { Coins, BarChart3, History, TrendingUp, TrendingDown, ChevronRight, Gift } from 'lucide-react';
-import UserBalance from '@/components/UserBalance';
 import GameModule from '@/components/GameModule';
 import BetsterAppBar from '@/components/BetsterAppBar';
 import BetsterBottomBar from '@/components/BetsterBottomBar';
 import BetsterDrawer from '@/components/BetsterDrawer';
+
+// Custom function to format currency with rupee symbol
+const formatRupees = (amount: number) => {
+  return `₹${amount.toLocaleString('en-IN')}`;
+};
 
 const Dashboard = () => {
   const { currentUser, userBets, games } = useGameContext();
@@ -52,7 +55,7 @@ const Dashboard = () => {
             <div className="flex items-center">
               <div className="flex items-center bg-black/30 px-3 py-2 rounded-lg">
                 <Coins className="h-5 w-5 text-amber-500 mr-2" />
-                <span className="text-white font-bold">{formatCurrency(currentUser.balance)}</span>
+                <span className="text-white font-bold">{formatRupees(currentUser.balance)}</span>
               </div>
               
               <button className="ml-3 flex items-center text-[#9b87f5] text-sm">
@@ -86,7 +89,7 @@ const Dashboard = () => {
                   <span className={`text-lg font-bold ${
                     stats.profitLoss >= 0 ? 'text-emerald-500' : 'text-rose-500'
                   }`}>
-                    {formatCurrency(stats.profitLoss)}
+                    {formatRupees(stats.profitLoss)}
                   </span>
                 </div>
               </div>
@@ -114,25 +117,25 @@ const Dashboard = () => {
               <GameModule 
                 type="bluff" 
                 name="Bluff the Tough" 
-                description="Strategy game of bluffing and deception"
+                description="Strategy game of numbers and psychology"
                 players={124}
-                prize="$5,000"
+                prize="5,000"
               />
               
               <GameModule 
                 type="top-spot" 
                 name="Top Spot" 
-                description="Claim the highest position on the number board"
+                description="Beat other players by picking the least chosen number"
                 players={87}
-                prize="$3,500"
+                prize="3,500"
               />
               
               <GameModule 
                 type="jackpot" 
                 name="Jackpot Horse" 
-                description="Bet on your horse to win the grand prize"
+                description="Daily mega-pool with massive prize"
                 players={215}
-                prize="$10,000"
+                prize="10,000"
               />
             </div>
           </div>
@@ -162,7 +165,7 @@ const Dashboard = () => {
                       </div>
                       <div className="text-right">
                         <p className={`text-sm font-medium ${isWinner ? 'text-emerald-500' : 'text-rose-500'}`}>
-                          {isWinner ? `+${formatCurrency(bet.amount * 10)}` : `-${formatCurrency(bet.amount)}`}
+                          {isWinner ? `+${formatRupees(bet.amount * 10)}` : `-${formatRupees(bet.amount)}`}
                         </p>
                         <p className="text-xs text-gray-400">
                           {isWinner ? 'Won' : game?.status === 'completed' ? 'Lost' : 'Pending'}

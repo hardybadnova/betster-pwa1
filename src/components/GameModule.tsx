@@ -128,7 +128,7 @@ const GameModule: React.FC<GameModuleProps> = ({
           <div className="mt-2 flex items-center text-xs text-muted-foreground">
             <span>{players} active players</span>
             <span className="mx-2">•</span>
-            <span>Prize: {prize}</span>
+            <span>Prize: ₹{prize}</span>
           </div>
         </div>
         
