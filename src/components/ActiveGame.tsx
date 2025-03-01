@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -86,7 +85,6 @@ const ActiveGame: React.FC<ActiveGameProps> = ({
   // Handle play again
   const handlePlayAgain = () => {
     setShowResults(false);
-    // Navigate to lobby or another game
     navigate('/lobby');
   };
 
@@ -242,8 +240,7 @@ const ActiveGame: React.FC<ActiveGameProps> = ({
       </div>
       
       {/* Game content */}
-      {/* Fix the type error by ensuring we compare status properly */}
-      {game.status === 'active' && (
+      {game.status === 'active' ? (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Number Selection - Center Top */}
           <div className="lg:col-span-12 order-2 lg:order-1">
@@ -423,9 +420,7 @@ const ActiveGame: React.FC<ActiveGameProps> = ({
             </div>
           </div>
         </div>
-      )}
-      
-      {game.status === 'waiting' && (
+      ) : game.status === 'waiting' ? (
         <div className="premium-glass-card p-8 text-center">
           <h3 className="text-xl font-medium mb-4">Waiting for Game to Start</h3>
           <p className="text-muted-foreground">
@@ -441,7 +436,7 @@ const ActiveGame: React.FC<ActiveGameProps> = ({
                 : 'The player who picks the least chosen number out of 10,000 players wins 90% of the massive pool!'}
           </p>
         </div>
-      )}
+      ) : null}
     </div>
   );
 };
