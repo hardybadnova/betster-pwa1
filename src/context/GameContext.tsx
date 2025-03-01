@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 // Define types
@@ -14,14 +13,14 @@ type Bet = {
   gameId: string;
   number: number;
   amount: number;
-  timestamp: Date;
+  timestamp: number;
 };
 
 export type Game = {
   id: string;
   name: string;
   createdBy: string;
-  createdAt: Date;
+  createdAt: number;
   status: 'waiting' | 'active' | 'completed';
   minBet: number;
   maxBet: number;
@@ -29,7 +28,7 @@ export type Game = {
   winningNumber: number | null;
   participants: string[];
   bets: Bet[];
-  endTime: Date | null;
+  endTime: number | null;
 };
 
 type GameContextType = {
@@ -67,7 +66,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [currentUser, setCurrentUser] = useState<User>({
     id: generateId(),
     name: 'You',
-    balance: 10000, // Start with $10,000
+    balance: 10000, // Start with ₹10,000
     avatar: `https://api.dicebear.com/7.x/identicon/svg?seed=${generateId()}`
   });
 
@@ -80,7 +79,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const newGame: Game = {
       id: gameId,
       ...gameData,
-      createdAt: new Date(),
+      createdAt: Date.now(),
       status: 'waiting',
       participants: [currentUser.id],
       bets: [],
@@ -138,7 +137,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       gameId,
       number,
       amount,
-      timestamp: new Date()
+      timestamp: Date.now()
     };
 
     setGames(prevGames => 
@@ -169,7 +168,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           ? { 
               ...game, 
               status: 'active',
-              endTime: new Date(Date.now() + game.duration * 1000)
+              endTime: Date.now() + game.duration * 1000
             }
           : game
       )
@@ -259,7 +258,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
           gameId,
           number: randomNumber,
           amount: randomAmount,
-          timestamp: new Date()
+          timestamp: Date.now()
         };
       });
 
@@ -281,7 +280,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: generateId(),
         name: "Quick Pick Game",
         createdBy: "system",
-        createdAt: new Date(),
+        createdAt: Date.now(),
         status: 'waiting' as const,
         minBet: 100,
         maxBet: 1000,
@@ -296,7 +295,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: generateId(),
         name: "High Roller Room",
         createdBy: "system",
-        createdAt: new Date(Date.now() - 1000 * 60 * 5), // 5 minutes ago
+        createdAt: Date.now() - 1000 * 60 * 5, // 5 minutes ago
         status: 'active' as const,
         minBet: 500,
         maxBet: 5000,
@@ -304,7 +303,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         winningNumber: null,
         participants: ["system", generateId(), generateId(), generateId(), generateId()],
         bets: [],
-        endTime: new Date(Date.now() + 1000 * 60 * 10) // 10 minutes from now
+        endTime: Date.now() + 1000 * 60 * 10 // 10 minutes from now
       };
 
       setGames([exampleGame1, exampleGame2]);

@@ -23,7 +23,7 @@ const ActiveGame: React.FC<ActiveGameProps> = ({
   const [showChat, setShowChat] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [chatMessage, setChatMessage] = useState('');
-  const [chatMessages, setChatMessages] = useState<{user: string, message: string, timestamp: Date}[]>([]);
+  const [chatMessages, setChatMessages] = useState<{user: string, message: string, timestamp: number}[]>([]);
   const [showResults, setShowResults] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   
@@ -106,7 +106,7 @@ const ActiveGame: React.FC<ActiveGameProps> = ({
       const newMessage = {
         user: currentUser.name,
         message: chatMessage,
-        timestamp: new Date()
+        timestamp: Date.now()
       };
       setChatMessages([...chatMessages, newMessage]);
       setChatMessage('');
@@ -369,7 +369,7 @@ const ActiveGame: React.FC<ActiveGameProps> = ({
                               }`}
                             >
                               <div className="text-xs opacity-70 mb-1">
-                                {msg.user} • {msg.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                {msg.user} • {new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                               </div>
                               <div>{msg.message}</div>
                             </div>

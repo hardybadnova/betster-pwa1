@@ -45,7 +45,7 @@ const GameCard: React.FC<GameCardProps> = ({ game }) => {
           
           <div className="flex items-center text-sm">
             <Clock className="h-4 w-4 mr-2 text-muted-foreground" />
-            {game.status === 'active' ? (
+            {game.status === 'active' && game.endTime ? (
               <span>Ends in: {calculateTimeRemaining(game.endTime)}</span>
             ) : (
               <span>Duration: {game.duration} seconds</span>
