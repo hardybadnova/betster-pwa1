@@ -76,3 +76,77 @@ export const getNumberPopularityClass = (frequency: number, maxFrequency: number
   if (ratio < 0.8) return 'bg-orange-100 text-orange-700';
   return 'bg-red-100 text-red-700';
 };
+
+/**
+ * Calculate time remaining until a given end time
+ */
+export const calculateTimeRemaining = (endTime: number): string => {
+  const now = Date.now();
+  const timeLeft = endTime - now;
+
+  if (timeLeft <= 0) return 'Ended';
+
+  const minutes = Math.floor(timeLeft / (1000 * 60));
+  const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+};
+
+/**
+ * Format a date for display
+ */
+export const formatDate = (timestamp: number): string => {
+  const date = new Date(timestamp);
+  return date.toLocaleDateString('en-IN', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+};
+
+/**
+ * Get game status information with label and color
+ */
+export const getGameStatus = (game: { status: string; endTime?: number }): { label: string; color: string } => {
+  switch (game.status) {
+    case 'waiting':
+      return { label: 'Waiting', color: 'bg-blue-500' };
+    case 'active':
+      return { label: 'Active', color: 'bg-green-500' };
+    case 'completed':
+      return { label: 'Completed', color: 'bg-gray-500' };
+    default:
+      return { label: 'Unknown', color: 'bg-gray-500' };
+  }
+};
+
+/**
+ * Get numbers filtered by pattern
+ */
+export const getNumbersByPattern = (filter: 'all' | 'even' | 'odd' | 'high' | 'low'): number[] => {
+  // Generate numbers from 0 to 200 (maximum needed for any game)
+  const allNumbers = Array.from({ length: 201 }, (_, i) => i);
+  
+  switch (filter) {
+    case 'all':
+      return allNumbers;
+    case 'even':
+      return allNumbers.filter(num => num % 2 === 0);
+    case 'odd':
+      return allNumbers.filter(num => num % 2 !== 0);
+    case 'high':
+      return allNumbers.filter(num => num > 100);
+    case 'low':
+      return allNumbers.filter(num => num <= 100);
+    default:
+      return allNumbers;
+  }
+};
+
+/**
+ * Calculate potential winnings for a bet
+ */
+export const calculatePotentialWinnings = (betAmount: number): number => {
+  const multiplier = 1.8; // Default multiplier
+  return betAmount * multiplier;
+};
