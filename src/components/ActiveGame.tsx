@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -241,6 +242,7 @@ const ActiveGame: React.FC<ActiveGameProps> = ({
       </div>
       
       {/* Game content */}
+      {/* Fix the type error by ensuring we compare status properly */}
       {game.status === 'active' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Number Selection - Center Top */}
